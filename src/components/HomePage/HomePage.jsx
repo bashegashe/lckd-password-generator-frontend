@@ -4,6 +4,7 @@ import {
   AiOutlineEye,
   AiOutlineEyeInvisible,
   AiOutlineCopy,
+  AiOutlineCheck,
 } from "react-icons/ai";
 import { LiaEdit } from "react-icons/lia";
 import logo from "../../assets/logo.svg";
@@ -14,12 +15,21 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState("testTijeb2323");
   const [activePassword, setActivePassword] = useState("");
+  const [textCopied, setTextCopied] = useState(false);
   useEffect(() => {
     if (!user) {
       setUser(sessionStorage.getItem("auth"));
       navigate("/auth");
     }
   }, [user, navigate]);
+
+  const copyText = () => {
+    navigator.clipboard.writeText(activePassword);
+    setTextCopied(true);
+    setTimeout(() => {
+      setTextCopied(false);
+    }, 2000);
+  };
 
   const testObject = [
     {
@@ -74,12 +84,8 @@ const HomePage = () => {
           <div className="homePage__plain-sight">
             <label>PLAIN SIGHT</label>
             <div>{activePassword}</div>
-            <span>
-              <AiOutlineCopy
-                onClick={() => {
-                  navigator.clipboard.writeText(activePassword);
-                }}
-              />
+            <span className={textCopied ? "active" : ""} onClick={copyText}>
+              {textCopied ? <AiOutlineCheck /> : <AiOutlineCopy />}
             </span>
           </div>
         )}

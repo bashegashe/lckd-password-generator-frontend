@@ -138,6 +138,15 @@
             &:hover {
                 color: #FFBD21;
             }
+
+            &.active {
+                color: rgb(83, 205, 83);
+                cursor: default;
+
+                &:hover {
+                    color: rgb(83, 205, 83);
+                }
+            }
         }
     }
     
