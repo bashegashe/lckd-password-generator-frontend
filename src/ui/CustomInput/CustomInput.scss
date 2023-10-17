@@ -1,0 +1,44 @@
+.customInput {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    label {
+        background: #FFBD21;
+        font-size: 14px;
+        color: #15085F;
+        line-height: 20px;
+        letter-spacing: 1.5px;
+        padding: 0.1rem 0.4rem;
+        border-top-right-radius: 0.4rem;
+        border-top-left-radius: 0.4rem;
+    }
+
+    input {
+        width: 100%;
+        background: none;
+        border: none;
+        outline: none;
+        border: 1px solid #FFBD21;
+        color: #FFBD21;
+        padding: 1rem;
+        border-radius: 0px 4px 4px 4px;
+        font-size: 20px;
+
+        &::placeholder {
+            color: #FFBD21;
+            font-size: 20px;
+        }
+    }
+
+    span {
+        position: absolute;
+        color:#FFBD21;
+        right: 0.6rem;
+        bottom: 0.3rem;
+        font-size: 2rem;
+        cursor: pointer;
+    }
+}

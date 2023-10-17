@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import logo from "../../assets/logo.svg";
 import "./LoginPage.scss";
+import CustomInput from "../../ui/CustomInput/CustomInput";
+import CustomButton from "../../ui/CustomButton/CustomButton";
 
 const LoginPage = () => {
   const [currentPage, setCurrentPage] = useState("login");
@@ -25,21 +26,24 @@ const LoginPage = () => {
         </h3>
       </div>
       <div className="login__form">
-        <div className="login__form--input">
-          <label>USERNAME</label>
-          <input type="text" placeholder="Username" />
-        </div>
-        <div className="login__form--input">
-          <label>PASSWORD</label>
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder={showPassword ? "Password" : "••••••••"}
-          />
-          <span onClick={() => setShowPassword((prev) => !prev)}>
-            {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
-          </span>
-        </div>
-        <button>{currentPage === "login" ? "LET ME IN" : "SIGN UP"}</button>
+        <CustomInput
+          label="USERNAME"
+          type="text"
+          placeholder="Username"
+          showButton={false}
+          onClickEvent={null}
+        />
+        <CustomInput
+          label="PASSWORD"
+          type={showPassword ? "text" : "password"}
+          placeholder={showPassword ? "Password" : "••••••••"}
+          showButton={true}
+          onClickEvent={() => setShowPassword((prev) => !prev)}
+          showPassword={showPassword}
+        />
+        <CustomButton
+          label={currentPage === "login" ? "LET ME IN" : "SIGN UP"}
+        />
       </div>
     </div>
   );
