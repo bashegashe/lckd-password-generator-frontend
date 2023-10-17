@@ -3,6 +3,7 @@ import PrivateRoute from "./helpers/PrivateRoute";
 
 import "./App.scss";
 import LoginPage from "./components/LoginPage/LoginPage";
+import ErrorPage from "./components/ErrorPage/ErrorPage";
 
 const App = () => {
   return (
@@ -19,7 +20,7 @@ const App = () => {
             }
           />
           <Route path="/auth" exact element={<LoginPage />} />
-          <Route path="/*" exact element={<h1>404</h1>} />
+          <Route path="/*" exact element={<ErrorPage />} />
         </Routes>
       </div>
     </div>
