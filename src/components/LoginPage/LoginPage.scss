@@ -1,0 +1,125 @@
+.login {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    &__signup-btn {
+        background: none;
+        border: 1px solid #FF4910;
+        color: #FF4910;
+        padding: 4px 8px 4px 8px;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+
+        &:hover {
+            background: #FF4910;
+            color: white;
+        }
+    }
+
+    &__logo {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        h1 {
+            font-size: 44px;
+            line-height: 60px;
+            letter-spacing: 3px;
+            padding: 0.6rem 0;
+            font-weight: 700;
+        }
+
+        h3 {
+            text-align: center;
+            color: #FFBD21;
+            font-weight: 700;
+            font-size: 20px;
+            line-height: 30px;
+            letter-spacing: 3px;
+        }
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+
+        &--input {
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+
+            label {
+                background: #FFBD21;
+                font-size: 14px;
+                color: #15085F;
+                line-height: 20px;
+                letter-spacing: 1.5px;
+                padding: 0.1rem 0.4rem;
+                border-top-right-radius: 0.4rem;
+                border-top-left-radius: 0.4rem;
+            }
+
+            input {
+                width: 100%;
+                background: none;
+                border: none;
+                outline: none;
+                border: 1px solid #FFBD21;
+                color: #FFBD21;
+                padding: 1rem;
+                border-radius: 0px 4px 4px 4px;
+                font-size: 20px;
+
+                &::placeholder {
+                    color: #FFBD21;
+                    font-size: 20px;
+                }
+            }
+
+            span {
+                position: absolute;
+                color:#FFBD21;
+                right: 0.6rem;
+                bottom: 0.3rem;
+                font-size: 2rem;
+                cursor: pointer;
+            }
+        }
+
+        button {
+            background: white;
+            color: #15085F;
+            border: 1px solid transparent;
+            outline: none;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1.6rem;
+            font-size: 20px;
+            letter-spacing: 2px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.1s ease-in-out;
+
+            &:hover {
+                background: #1f0d80;
+                color: white;
+                border: 1px solid white;
+            }
+
+            &:active {
+                transform: scale(0.98);
+            }
+        }
+    }
+}   
