@@ -9,13 +9,16 @@ import {
 import { LiaEdit } from "react-icons/lia";
 import logo from "../../assets/logo.svg";
 import CustomButton from "../../ui/CustomButton/CustomButton";
+import CustomInput from "../../ui/CustomInput/CustomInput";
 import "./HomePage.scss";
+import PasswordGenerator from "../../ui/PasswordGenerator/PasswordGenerator";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState("testTijeb2323");
+  const [user, setUser] = useState("12edawdasd22dwa");
   const [activePassword, setActivePassword] = useState("");
   const [textCopied, setTextCopied] = useState(false);
+  const [page, setPage] = useState("home");
   useEffect(() => {
     if (!user) {
       setUser(sessionStorage.getItem("auth"));
@@ -57,40 +60,108 @@ const HomePage = () => {
         <h2>LCKD</h2>
       </header>
       <div className="homePage__main--container">
-        <main className="homePage__stored">
-          <label>STORED PASSWORDS</label>
-          {testObject.map((item, index) => (
-            <div
-              className={`homePage__stored--item ${
-                activePassword === item.password ? "active" : null
-              }`}
-              key={index}
-            >
-              <p>{item.www}</p>
-              <span>
-                {activePassword === item.password ? <LiaEdit /> : null}
-                {activePassword === item.password ? (
-                  <AiOutlineEye onClick={() => setActivePassword("")} />
-                ) : (
-                  <AiOutlineEyeInvisible
-                    onClick={() => setActivePassword(item.password)}
-                  />
-                )}
-              </span>
-            </div>
-          ))}
-        </main>
-        {activePassword && (
-          <div className="homePage__plain-sight">
-            <label>PLAIN SIGHT</label>
-            <div>{activePassword}</div>
-            <span className={textCopied ? "active" : ""} onClick={copyText}>
-              {textCopied ? <AiOutlineCheck /> : <AiOutlineCopy />}
-            </span>
-          </div>
+        {page === "home" && (
+          <>
+            <main className="homePage__stored">
+              <label>STORED PASSWORDS</label>
+              {testObject.map((item, index) => (
+                <div
+                  className={`homePage__stored--item ${
+                    activePassword === item.password ? "active" : null
+                  }`}
+                  key={index}
+                >
+                  <p>{item.www}</p>
+                  <span>
+                    {activePassword === item.password ? (
+                      <LiaEdit onClick={() => setPage("update")} />
+                    ) : null}
+                    {activePassword === item.password ? (
+                      <AiOutlineEye onClick={() => setActivePassword("")} />
+                    ) : (
+                      <AiOutlineEyeInvisible
+                        onClick={() => setActivePassword(item.password)}
+                      />
+                    )}
+                  </span>
+                </div>
+              ))}
+            </main>
+            {activePassword && (
+              <>
+                <br />
+                <br />
+                <div className="homePage__plain-sight">
+                  <label>PLAIN SIGHT</label>
+                  <div>{activePassword}</div>
+                  <span
+                    className={textCopied ? "active" : ""}
+                    onClick={copyText}
+                  >
+                    {textCopied ? <AiOutlineCheck /> : <AiOutlineCopy />}
+                  </span>
+                </div>
+              </>
+            )}
+          </>
+        )}
+        {page === "create" && (
+          <>
+            <h2>
+              NEW SECURE
+              <br />
+              CREDENTIALS
+            </h2>
+            <main className="homePage__form">
+              <CustomInput
+                label="WWW"
+                type="text"
+                placeholder="www.example.com"
+              />
+              <CustomInput
+                label="USERNAME"
+                type="text"
+                placeholder="Username"
+              />
+              <PasswordGenerator />
+            </main>
+          </>
+        )}
+        {page === "update" && (
+          <>
+            <h2>
+              EDIT YOUR
+              <br />
+              CREDENTIALS
+            </h2>
+            <main className="homePage__form">
+              <CustomInput
+                label="WWW"
+                type="text"
+                placeholder="www.example.com"
+              />
+              <CustomInput
+                label="USERNAME"
+                type="text"
+                placeholder="Username"
+              />
+              <PasswordGenerator />
+            </main>
+          </>
         )}
       </div>
-      <CustomButton label="NEW LCKD" />
+      <CustomButton
+        label={
+          page === "home"
+            ? "NEW LCKD"
+            : page === "create"
+            ? "CREATE LCKD"
+            : page === "update" && "UPDATE LCKD"
+        }
+        onClickEvent={
+          page === "home" ? () => setPage("create") : () => setPage("home")
+        }
+      />
     </div>
   );
 };

@@ -43,6 +43,7 @@ const LoginPage = () => {
         />
         <CustomButton
           label={currentPage === "login" ? "LET ME IN" : "SIGN UP"}
+          onClickEvent={() => {}}
         />
       </div>
     </div>
