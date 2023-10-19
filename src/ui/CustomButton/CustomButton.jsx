@@ -11,7 +11,7 @@ const CustomButton = (props) => {
 };
 
 CustomButton.propTypes = {
-  label: PropTypes.string.isRequired,
+  label: PropTypes.any.isRequired,
   onClickEvent: PropTypes.func.isRequired,
 };
 

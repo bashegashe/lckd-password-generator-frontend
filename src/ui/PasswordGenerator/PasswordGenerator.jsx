@@ -1,13 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { AiOutlineUndo } from "react-icons/ai";
 import "./PasswordGenerator.scss";
 
-const PasswordGenerator = () => {
+const PasswordGenerator = ({ setGeneratedPassword, setValue }) => {
   const [password, setPassword] = useState("");
   const [passwordLength, setPasswordLength] = useState(12);
   const [includeNumbers, setIncludeNumbers] = useState(true);
   const [includeSymbols, setIncludeSymbols] = useState(true);
   const [includeUppercase, setIncludeUppercase] = useState(true);
+
+  useEffect(() => {
+    if (setValue) setPassword(setValue);
+  }, [setValue]);
 
   const generatePassword = () => {
     if (passwordLength > 30) setPasswordLength(30);
@@ -28,6 +33,7 @@ const PasswordGenerator = () => {
     }
 
     setPassword(newPassword);
+    setGeneratedPassword(newPassword);
   };
 
   return (
@@ -80,6 +86,11 @@ const PasswordGenerator = () => {
       </div>
     </div>
   );
+};
+
+PasswordGenerator.propTypes = {
+  setGeneratedPassword: PropTypes.func.isRequired,
+  setValue: PropTypes.any,
 };
 
 export default PasswordGenerator;

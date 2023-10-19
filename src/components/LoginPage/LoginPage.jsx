@@ -1,16 +1,54 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import logo from "../../assets/logo.svg";
 import "./LoginPage.scss";
 import CustomInput from "../../ui/CustomInput/CustomInput";
 import CustomButton from "../../ui/CustomButton/CustomButton";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState("login");
   const [showPassword, setShowPassword] = useState(false);
+  const [postData, setPostData] = useState({
+    username: "",
+    password: "",
+  });
 
   const togglePage = () => {
     setCurrentPage((prev) => (prev === "login" ? "signup" : "login"));
   };
+
+  const registerFunction = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/register`,
+        postData
+      );
+      if (response.status === 200) {
+        alert(`User ${response.data.message}!`);
+        setCurrentPage("login");
+      }
+    } catch (error) {
+      alert(`${error.response.data.message}!`);
+    }
+  };
+
+  const loginUser = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/login`,
+        postData
+      );
+      if (response.status === 200) {
+        localStorage.setItem("auth", response.data.token);
+        navigate("/");
+      }
+    } catch (error) {
+      alert(`${error.response.data.message}!`);
+    }
+  };
+
   return (
     <div className="login">
       <button className="login__signup-btn" onClick={togglePage}>
@@ -32,6 +70,10 @@ const LoginPage = () => {
           placeholder="Username"
           showButton={false}
           onClickEvent={null}
+          value={postData.username}
+          onChange={(e) =>
+            setPostData({ ...postData, username: e.target.value })
+          }
         />
         <CustomInput
           label="PASSWORD"
@@ -40,10 +82,14 @@ const LoginPage = () => {
           showButton={true}
           onClickEvent={() => setShowPassword((prev) => !prev)}
           showPassword={showPassword}
+          value={postData.password}
+          onChange={(e) =>
+            setPostData({ ...postData, password: e.target.value })
+          }
         />
         <CustomButton
           label={currentPage === "login" ? "LET ME IN" : "SIGN UP"}
-          onClickEvent={() => {}}
+          onClickEvent={currentPage === "login" ? loginUser : registerFunction}
         />
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   AiOutlineEye,
   AiOutlineEyeInvisible,
@@ -7,6 +8,8 @@ import {
   AiOutlineCheck,
 } from "react-icons/ai";
 import { LiaEdit } from "react-icons/lia";
+import { BsTrash3 } from "react-icons/bs";
+import { BiExit } from "react-icons/bi";
 import logo from "../../assets/logo.svg";
 import CustomButton from "../../ui/CustomButton/CustomButton";
 import CustomInput from "../../ui/CustomInput/CustomInput";
@@ -15,15 +18,29 @@ import PasswordGenerator from "../../ui/PasswordGenerator/PasswordGenerator";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState("12edawdasd22dwa");
+  const [user, setUser] = useState(localStorage.getItem("auth"));
   const [activePassword, setActivePassword] = useState("");
   const [textCopied, setTextCopied] = useState(false);
   const [page, setPage] = useState("home");
+  const [generatedPassword, setGeneratedPassword] = useState("");
+  const [savePassword, setSavePassword] = useState({
+    domain: "",
+    username: "",
+    password: generatedPassword,
+  });
+  const [updatePassword, setUpdatePassword] = useState({
+    domain: "",
+    username: "",
+    newPassword: generatedPassword,
+  });
+  const [passwords, setPasswords] = useState([]);
+
   useEffect(() => {
     if (!user) {
-      setUser(sessionStorage.getItem("auth"));
+      setUser(localStorage.getItem("auth"));
       navigate("/auth");
     }
+    getAllPasswords();
   }, [user, navigate]);
 
   const copyText = () => {
@@ -34,24 +51,109 @@ const HomePage = () => {
     }, 2000);
   };
 
-  const testObject = [
-    {
-      www: "www.google.com",
-      password: "1231231231awdw21e1dwad",
-    },
-    {
-      www: "www.facebook.com",
-      password: "wadawdwdgee",
-    },
-    {
-      www: "www.twitter.com",
-      password: "ggdfedawd",
-    },
-    {
-      www: "www.snigel.com",
-      password: "wda#€%#€%31231",
-    },
-  ];
+  const editUserBtn = (domain, username, password) => {
+    setPage("update");
+    setUpdatePassword({
+      domain: domain,
+      username: username,
+      newPassword: password,
+    });
+    setActivePassword("");
+  };
+
+  useEffect(() => {
+    if (generatedPassword) {
+      setSavePassword({ ...savePassword, password: generatedPassword });
+      setUpdatePassword({ ...updatePassword, newPassword: generatedPassword });
+    }
+  }, [generatedPassword]);
+
+  const saveNewPassword = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/password`,
+        savePassword,
+        {
+          headers: {
+            Authorization: `Bearer ${user}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setActivePassword("");
+        await getAllPasswords();
+        setPage("home");
+        alert("Password saved!");
+        setSavePassword({
+          domain: "",
+          username: "",
+          password: "",
+        });
+      }
+    } catch (error) {
+      console.log(error.response.data.error);
+      alert(`${error.response.data.error}!`);
+    }
+  };
+
+  const getAllPasswords = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/password`,
+        {
+          headers: {
+            Authorization: `Bearer ${user}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setPasswords(response.data.domains);
+      }
+    } catch (error) {
+      alert("Something went wrong!");
+    }
+  };
+
+  const updatePasswordBtn = async () => {
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_BASE_URL}/password`,
+        updatePassword,
+        {
+          headers: {
+            Authorization: `Bearer ${user}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        await getAllPasswords();
+        setPage("home");
+        alert("Password updated!");
+      }
+    } catch (error) {
+      alert(`${error.response.data.error}!`);
+    }
+  };
+
+  const deletePassword = async (domain) => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/password/${domain}`,
+        {
+          headers: {
+            Authorization: `Bearer ${user}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        await getAllPasswords();
+        setActivePassword("");
+        alert("Password deleted!");
+      }
+    } catch (error) {
+      alert(`${error.response.data.error}!`);
+    }
+  };
 
   return (
     <div className="homePage">
@@ -64,28 +166,47 @@ const HomePage = () => {
           <>
             <main className="homePage__stored">
               <label>STORED PASSWORDS</label>
-              {testObject.map((item, index) => (
-                <div
-                  className={`homePage__stored--item ${
-                    activePassword === item.password ? "active" : null
-                  }`}
-                  key={index}
-                >
-                  <p>{item.www}</p>
-                  <span>
-                    {activePassword === item.password ? (
-                      <LiaEdit onClick={() => setPage("update")} />
-                    ) : null}
-                    {activePassword === item.password ? (
-                      <AiOutlineEye onClick={() => setActivePassword("")} />
-                    ) : (
-                      <AiOutlineEyeInvisible
-                        onClick={() => setActivePassword(item.password)}
-                      />
-                    )}
-                  </span>
-                </div>
-              ))}
+              {passwords ? (
+                passwords?.map((item, index) => (
+                  <div
+                    className={`homePage__stored--item ${
+                      activePassword === item.password ? "active" : null
+                    }`}
+                    key={index}
+                  >
+                    <p>{item.domain}</p>
+                    <span>
+                      {activePassword === item.password ? (
+                        <>
+                          <BsTrash3
+                            onClick={() => deletePassword(item.domain)}
+                          />
+                          <LiaEdit
+                            onClick={() =>
+                              editUserBtn(
+                                item.domain,
+                                item.username,
+                                item.password
+                              )
+                            }
+                          />
+                        </>
+                      ) : null}
+                      {activePassword === item.password ? (
+                        <AiOutlineEye onClick={() => setActivePassword("")} />
+                      ) : (
+                        <AiOutlineEyeInvisible
+                          onClick={() => {
+                            setActivePassword(item.password);
+                          }}
+                        />
+                      )}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p>Save your first password to display them here</p>
+              )}
             </main>
             {activePassword && (
               <>
@@ -117,13 +238,21 @@ const HomePage = () => {
                 label="WWW"
                 type="text"
                 placeholder="www.example.com"
+                value={savePassword.domain}
+                onChange={(e) =>
+                  setSavePassword({ ...savePassword, domain: e.target.value })
+                }
               />
               <CustomInput
                 label="USERNAME"
                 type="text"
                 placeholder="Username"
+                value={savePassword.username}
+                onChange={(e) =>
+                  setSavePassword({ ...savePassword, username: e.target.value })
+                }
               />
-              <PasswordGenerator />
+              <PasswordGenerator setGeneratedPassword={setGeneratedPassword} />
             </main>
           </>
         )}
@@ -134,18 +263,39 @@ const HomePage = () => {
               <br />
               CREDENTIALS
             </h2>
+            <p className="update__go-back" onClick={() => setPage("home")}>
+              <BiExit />
+              Go back
+            </p>
             <main className="homePage__form">
               <CustomInput
                 label="WWW"
                 type="text"
                 placeholder="www.example.com"
+                value={updatePassword.domain}
+                onChange={(e) =>
+                  setUpdatePassword({
+                    ...updatePassword,
+                    domain: e.target.value,
+                  })
+                }
               />
               <CustomInput
                 label="USERNAME"
                 type="text"
                 placeholder="Username"
+                value={updatePassword.username}
+                onChange={(e) =>
+                  setUpdatePassword({
+                    ...updatePassword,
+                    username: e.target.value,
+                  })
+                }
               />
-              <PasswordGenerator />
+              <PasswordGenerator
+                setGeneratedPassword={setGeneratedPassword}
+                setValue={updatePassword.newPassword}
+              />
             </main>
           </>
         )}
@@ -159,7 +309,11 @@ const HomePage = () => {
             : page === "update" && "UPDATE LCKD"
         }
         onClickEvent={
-          page === "home" ? () => setPage("create") : () => setPage("home")
+          page === "home"
+            ? () => setPage("create")
+            : page === "create"
+            ? saveNewPassword
+            : page === "update" && updatePasswordBtn
         }
       />
     </div>
