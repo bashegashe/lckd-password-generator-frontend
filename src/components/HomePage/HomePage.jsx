@@ -40,7 +40,9 @@ const HomePage = () => {
       setUser(localStorage.getItem("auth"));
       navigate("/auth");
     }
-    getAllPasswords();
+    if (user) {
+      getAllPasswords();
+    }
   }, [user, navigate]);
 
   const copyText = () => {
@@ -166,7 +168,7 @@ const HomePage = () => {
           <>
             <main className="homePage__stored">
               <label>STORED PASSWORDS</label>
-              {passwords ? (
+              {passwords.length > 0 ? (
                 passwords?.map((item, index) => (
                   <div
                     className={`homePage__stored--item ${
@@ -205,7 +207,7 @@ const HomePage = () => {
                   </div>
                 ))
               ) : (
-                <p>Save your first password to display them here</p>
+                <p>Time to save ur first password</p>
               )}
             </main>
             {activePassword && (
@@ -233,6 +235,10 @@ const HomePage = () => {
               <br />
               CREDENTIALS
             </h2>
+            <p className="update__go-back" onClick={() => setPage("home")}>
+              <BiExit />
+              Go back
+            </p>
             <main className="homePage__form">
               <CustomInput
                 label="WWW"
