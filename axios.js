@@ -1,6 +1,8 @@
 import axios from "axios";
 
 function getBaseURL() {
+  console.log('VITE BASE URL ', import.meta.env.BASE_URL)
+
   const searchParams = new URLSearchParams(window.location.search);
   const API_URL = searchParams.get("api_url");
 
