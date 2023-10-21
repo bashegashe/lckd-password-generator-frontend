@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
   AiOutlineEye,
   AiOutlineEyeInvisible,
@@ -15,6 +14,7 @@ import CustomButton from "../../ui/CustomButton/CustomButton";
 import CustomInput from "../../ui/CustomInput/CustomInput";
 import "./HomePage.scss";
 import PasswordGenerator from "../../ui/PasswordGenerator/PasswordGenerator";
+import instance from "../../../axios";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -72,20 +72,20 @@ const HomePage = () => {
 
   const saveNewPassword = async () => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/password`,
+      const response = await instance.post(
+        `${instance.getUri()}/password`,
         savePassword,
         {
           headers: {
             Authorization: `Bearer ${user}`,
-          },
+          }
         }
       );
       if (response.status === 200) {
         setActivePassword("");
         await getAllPasswords();
         setPage("home");
-        alert("Password saved!");
+        // alert("Password saved!");
         setSavePassword({
           domain: "",
           username: "",
@@ -94,14 +94,14 @@ const HomePage = () => {
       }
     } catch (error) {
       console.log(error.response.data.error);
-      alert(`${error.response.data.error}!`);
+      // alert(`${error.response.data.error}!`);
     }
   };
 
   const getAllPasswords = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/password`,
+      const response = await instance.get(
+        `${instance.getUri()}/password`,
         {
           headers: {
             Authorization: `Bearer ${user}`,
@@ -112,14 +112,14 @@ const HomePage = () => {
         setPasswords(response.data.domains);
       }
     } catch (error) {
-      alert("Something went wrong!");
+      // alert("Something went wrong!");
     }
   };
 
   const updatePasswordBtn = async () => {
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_BASE_URL}/password`,
+      const response = await instance.put(
+        `${instance.getUri()}/password`,
         updatePassword,
         {
           headers: {
@@ -130,17 +130,17 @@ const HomePage = () => {
       if (response.status === 200) {
         await getAllPasswords();
         setPage("home");
-        alert("Password updated!");
+        // alert("Password updated!");
       }
     } catch (error) {
-      alert(`${error.response.data.error}!`);
+      // alert(`${error.response.data.error}!`);
     }
   };
 
   const deletePassword = async (domain) => {
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/password/${domain}`,
+      const response = await instance.delete(
+        `${instance.getUri()}/password/${domain}`,
         {
           headers: {
             Authorization: `Bearer ${user}`,
@@ -150,10 +150,10 @@ const HomePage = () => {
       if (response.status === 200) {
         await getAllPasswords();
         setActivePassword("");
-        alert("Password deleted!");
+        // alert("Password deleted!");
       }
     } catch (error) {
-      alert(`${error.response.data.error}!`);
+      // alert(`${error.response.data.error}!`);
     }
   };
 
@@ -171,9 +171,8 @@ const HomePage = () => {
               {passwords.length > 0 ? (
                 passwords?.map((item, index) => (
                   <div
-                    className={`homePage__stored--item ${
-                      activePassword === item.password ? "active" : null
-                    }`}
+                    className={`homePage__stored--item ${activePassword === item.password ? "active" : null
+                      }`}
                     key={index}
                   >
                     <p>{item.domain}</p>
@@ -311,15 +310,15 @@ const HomePage = () => {
           page === "home"
             ? "NEW LCKD"
             : page === "create"
-            ? "CREATE LCKD"
-            : page === "update" && "UPDATE LCKD"
+              ? "CREATE LCKD"
+              : page === "update" && "UPDATE LCKD"
         }
         onClickEvent={
           page === "home"
             ? () => setPage("create")
             : page === "create"
-            ? saveNewPassword
-            : page === "update" && updatePasswordBtn
+              ? saveNewPassword
+              : page === "update" && updatePasswordBtn
         }
       />
     </div>

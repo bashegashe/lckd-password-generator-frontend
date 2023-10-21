@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import logo from "../../assets/logo.svg";
 import "./LoginPage.scss";
 import CustomInput from "../../ui/CustomInput/CustomInput";
 import CustomButton from "../../ui/CustomButton/CustomButton";
+import instance from "../../../axios";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -21,23 +21,23 @@ const LoginPage = () => {
 
   const registerFunction = async () => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/register`,
+      const response = await instance.post(
+        `${instance.getUri()}/register`,
         postData
       );
       if (response.status === 200) {
-        alert(`User ${response.data.message}!`);
+        // alert(`User ${response.data.message}!`);
         setCurrentPage("login");
       }
     } catch (error) {
-      alert(`${error.response.data.message}!`);
+      // alert(`${error.response.data.message}!`);
     }
   };
 
   const loginUser = async () => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/login`,
+      const response = await instance.post(
+        `${instance.getUri()}/login`,
         postData
       );
       if (response.status === 200) {
@@ -45,7 +45,7 @@ const LoginPage = () => {
         navigate("/");
       }
     } catch (error) {
-      alert(`${error.response.data.message}!`);
+      // alert(`${error.response.data.message}!`);
     }
   };
 
